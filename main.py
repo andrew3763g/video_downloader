@@ -4,6 +4,23 @@ import datetime
 import re
 from yt_dlp import YoutubeDL
 
+def check_yt_dlp_version():
+    """Проверка и обновление yt-dlp"""
+    try:
+        import subprocess
+        result = subprocess.run(['pip', 'show', 'yt-dlp'],
+                              capture_output=True, text=True)
+        if result.returncode == 0:
+            for line in result.stdout.split('\n'):
+                if line.startswith('Version:'):
+                    version = line.split(':')[1].strip()
+                    print(f"📦 Версия yt-dlp: {version}")
+                    break
+        else:
+            print("⚠️ yt-dlp не найден")
+    except Exception:
+        print("⚠️ Не удалось проверить версию yt-dlp")
+
 # Настройки путей
 DOWNLOAD_DIR = os.path.join(os.getcwd(), 'Downloads')
 LOG_FILE = os.path.join(os.getcwd(), 'downloads_log.csv')
@@ -206,6 +223,9 @@ def main():
     # Настройка окружения
     setup_directories()
     print()
+
+    # Проверяем версию yt-dlp
+    check_yt_dlp_version()
 
     try:
         # Получаем данные от пользователя
